@@ -26,6 +26,7 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+USING_NS_CC;
 
 class HelloWorld : public cocos2d::Scene
 {
@@ -39,6 +40,13 @@ public:
     
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
+
+	Size visibleSize;
+	Size winSize;
+	Vec2 origin;
+	bool onTouchBegan(Touch* touch, Event* event);
+	Vector<Sprite*> towerBases;
+	void loadTowerPositions();
 };
 
 #endif // __HELLOWORLD_SCENE_H__
