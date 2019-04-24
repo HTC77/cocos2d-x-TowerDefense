@@ -24,6 +24,7 @@
 
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
+#include "Tower.h"
 
 Scene* HelloWorld::createScene()
 {
@@ -44,10 +45,16 @@ void HelloWorld::loadTowerPositions()
 		x = tempMap["x"].asInt();
 		y = tempMap["y"].asInt();
 		auto towerBase = Sprite::create("open_spot-hd.png");
-		towerBase->setPosition(Vec2(winSize.width * x / 480, winSize.height * y / 320));
+		towerBase->setPosition(Vec2(winSize.width * x / 480,
+			winSize.height * y / 320));
 		this->addChild(towerBase);
 		towerBases.pushBack(towerBase);
 	}
+}
+
+bool HelloWorld::canBuyTower()
+{
+	return true;
 }
 
 // on "init" you need to initialize your instance
@@ -76,10 +83,23 @@ bool HelloWorld::init()
 
 	// 3 - Load tower positions
 	this->loadTowerPositions();
+
     return true;
 }
 
 bool HelloWorld::onTouchBegan(Touch* touch, Event* event)
 {
+	Vec2 location = Director::getInstance()->convertToGL(touch->getLocationInView());
+	for (int i = 0; i < towerBases.size(); ++i)
+	{
+		Node* tb = towerBases.at(i);
+		if(tb->getBoundingBox().containsPoint(location) && this->canBuyTower() && tb->getUserData() == NULL)
+		{
+			//We will spend our gold later.
+			Tower* tower = Tower::createWithTheGame(this, tb->getPosition());
+			towers.pushBack(tower);
+			tb->setUserData(tower);
+		}
+	}
 	return true;
 }

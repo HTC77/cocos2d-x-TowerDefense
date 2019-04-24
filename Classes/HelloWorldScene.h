@@ -47,6 +47,8 @@ public:
 	bool onTouchBegan(Touch* touch, Event* event);
 	Vector<Sprite*> towerBases;
 	void loadTowerPositions();
+	Vector<Node*> towers;
+	bool canBuyTower();
 };
 
 #endif // __HELLOWORLD_SCENE_H__
