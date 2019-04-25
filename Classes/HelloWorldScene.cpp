@@ -57,6 +57,38 @@ bool HelloWorld::canBuyTower()
 	return true;
 }
 
+void HelloWorld::addWaypoints()
+{
+	Waypoint * waypoint1 = Waypoint::createWithTheGame(
+		this, Vec2(winSize.width * 420 / 480, winSize.height * 35 / 320));
+	waypoints.pushBack(waypoint1);
+
+	Waypoint * waypoint2 = Waypoint::createWithTheGame(
+		this, Vec2(winSize.width * 35 / 480, winSize.height * 35 / 320));
+	waypoints.pushBack(waypoint2);
+	waypoint2->nextWaypoint = waypoint1;
+
+	Waypoint * waypoint3 = Waypoint::createWithTheGame(
+		this, Vec2(winSize.width * 35 / 480, winSize.height * 130 / 320));
+	waypoints.pushBack(waypoint3);
+	waypoint3->nextWaypoint = waypoint2;
+
+	Waypoint * waypoint4 = Waypoint::createWithTheGame(
+		this, Vec2(winSize.width * 445 / 480, winSize.height * 130 / 320));
+	waypoints.pushBack(waypoint4);
+	waypoint4->nextWaypoint = waypoint3;
+
+	Waypoint * waypoint5 = Waypoint::createWithTheGame(
+		this, Vec2(winSize.width * 445 / 480, winSize.height * 220 / 320));
+	waypoints.pushBack(waypoint5);
+	waypoint5->nextWaypoint = waypoint4;
+
+	Waypoint * waypoint6 = Waypoint::createWithTheGame(
+		this, Vec2(winSize.width * -40 / 480, winSize.height * 220 / 320));
+	waypoints.pushBack(waypoint6);
+	waypoint6->nextWaypoint = waypoint5;
+}
+
 // on "init" you need to initialize your instance
 bool HelloWorld::init()
 {
@@ -84,6 +116,10 @@ bool HelloWorld::init()
 	// 3 - Load tower positions
 	this->loadTowerPositions();
 
+	// 4 - Add waypoints
+	this->addWaypoints();
+
+	//this->setScale(0.5);
     return true;
 }
 

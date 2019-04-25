@@ -37,8 +37,7 @@ bool Tower::initWithTheGame(HelloWorld* _game, Vec2 location)
 		attackRange, 360, winSize.width * 30 / 480, false, 1.0f, 1.0f,
 		Color4F::WHITE);
 	this->addChild(draw);
-
-	this->scheduleUpdate();   
+	this->scheduleUpdate();
 	return true;
 }
 

@@ -26,6 +26,7 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+#include "Waypoint.h"
 USING_NS_CC;
 
 class HelloWorld : public cocos2d::Scene
@@ -49,6 +50,8 @@ public:
 	void loadTowerPositions();
 	Vector<Node*> towers;
 	bool canBuyTower();
+	Vector<Waypoint*> waypoints;
+	void addWaypoints();
 };
 
 #endif // __HELLOWORLD_SCENE_H__
