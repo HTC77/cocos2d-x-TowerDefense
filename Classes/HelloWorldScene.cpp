@@ -54,7 +54,9 @@ void HelloWorld::loadTowerPositions()
 
 bool HelloWorld::canBuyTower()
 {
-	return true;
+	if (playerGold - kTOWER_COST >= 0)
+		return true;
+	return false;
 }
 
 void HelloWorld::addWaypoints()
@@ -183,6 +185,18 @@ bool HelloWorld::init()
 	ui_hp_lbl->setPosition(Vec2(35, winSize.height - 12));
 	gameEnded = false;
 
+	// 8 - Gold
+	playerGold = 1000;
+	ui_gold_lbl = Label::createWithBMFont("font_red-hd.fnt",
+		StringUtils::format("GOLD: %d", playerGold));
+	this->addChild(ui_gold_lbl, 10);
+	ui_gold_lbl->setPosition(Vec2(135, winSize.height - 12));
+	ui_gold_lbl->setAnchorPoint(Vec2(0, 0.5));
+
+	// 9 - sound
+	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic(
+		"8bitDungeonLevel.mp3", true);
+
     return true;
 }
 
@@ -194,7 +208,11 @@ bool HelloWorld::onTouchBegan(Touch* touch, Event* event)
 		Node* tb = towerBases.at(i);
 		if(tb->getBoundingBox().containsPoint(location) && this->canBuyTower() && tb->getUserData() == NULL)
 		{
-			//We will spend our gold later.
+			//spend gold
+			playerGold -= kTOWER_COST;
+			ui_gold_lbl->setString(StringUtils::format("GOLD: %d", playerGold));
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(
+				"tower_place.wav");
 			Tower* tower = Tower::createWithTheGame(this, tb->getPosition());
 			towers.pushBack(tower);
 			tb->setUserData(tower);
@@ -204,6 +222,7 @@ bool HelloWorld::onTouchBegan(Touch* touch, Event* event)
 }
 
 void HelloWorld::getHpDamage() {
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("life_lose.wav");
 	playerHp--;
 	ui_hp_lbl->setString(StringUtils::format("HP: %d", playerHp));
 	if (playerHp <= 0)
@@ -216,4 +235,10 @@ void HelloWorld::doGameOver() {
 		Director::getInstance()->replaceScene(
 			TransitionRotoZoom::create(3, HelloWorld::createScene()));
 	}
+}
+
+void HelloWorld::awardGold(int gold)
+{
+	playerGold += gold;
+	ui_gold_lbl->setString(StringUtils::format("GOLD: %d", playerGold));
 }

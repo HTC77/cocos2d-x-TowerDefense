@@ -1,6 +1,7 @@
 #include "Enemy.h"
 #include "HelloWorldScene.h"
 #include "Tower.h"
+#include "SimpleAudioEngine.h"
 
 #define HEALTH_BAR_WIDTH 20
 #define HEALTH_BAR_ORIGIN -10
@@ -144,9 +145,11 @@ void Enemy::gotLostSight(Tower* attacker)
 
 void Enemy::getDamaged(int damage)
 {
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("laser_shoot.wav");
 	currentHp -= damage;
 	if (currentHp <= 0)
 	{
+		theGame->awardGold(200);
 		this->getRemoved();
 	}
 }
