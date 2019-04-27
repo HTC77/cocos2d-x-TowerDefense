@@ -64,6 +64,10 @@ public:
 	bool loadWave();
 	ValueVector waves;
 	ValueVector currenWave;
+	int playerHp;
+	Label *ui_hp_lbl;
+	bool gameEnded;
+	void doGameOver();
 };
 
 #endif // __HELLOWORLD_SCENE_H__

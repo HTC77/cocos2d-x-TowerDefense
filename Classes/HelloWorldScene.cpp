@@ -89,7 +89,8 @@ void HelloWorld::addWaypoints()
 	waypoint6->nextWaypoint = waypoint5;
 }
 
-bool HelloWorld::circle(Vec2 circlePoint, float radius, Vec2 circlePointTwo, float radiusTwo)
+bool HelloWorld::circle(Vec2 circlePoint, float radius,
+	Vec2 circlePointTwo, float radiusTwo)
 {
 	float xdif = circlePoint.x - circlePointTwo.x;
 	float ydif = circlePoint.y - circlePointTwo.y;
@@ -113,11 +114,6 @@ void HelloWorld::enemyGotKilled()
 				TransitionSplitCols::create(1, HelloWorld::createScene()));
 		}
 	}
-}
-
-void HelloWorld::getHpDamage()
-{
-
 }
 
 bool HelloWorld::loadWave()
@@ -179,7 +175,14 @@ bool HelloWorld::init()
 		"Waves.plist");
 	this->loadWave();
 
-	//this->setScale(0.5);
+	// 7 - Player lives
+	playerHp = 5;
+	ui_hp_lbl = Label::createWithBMFont("font_red-hd.fnt",
+		StringUtils::format("HP: %d", playerHp));
+	this->addChild(ui_hp_lbl, 10);
+	ui_hp_lbl->setPosition(Vec2(35, winSize.height - 12));
+	gameEnded = false;
+
     return true;
 }
 
@@ -198,4 +201,19 @@ bool HelloWorld::onTouchBegan(Touch* touch, Event* event)
 		}
 	}
 	return true;
+}
+
+void HelloWorld::getHpDamage() {
+	playerHp--;
+	ui_hp_lbl->setString(StringUtils::format("HP: %d", playerHp));
+	if (playerHp <= 0)
+		this->doGameOver();
+}
+
+void HelloWorld::doGameOver() {
+	if (!gameEnded) {
+		gameEnded = true;
+		Director::getInstance()->replaceScene(
+			TransitionRotoZoom::create(3, HelloWorld::createScene()));
+	}
 }
