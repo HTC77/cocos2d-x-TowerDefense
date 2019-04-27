@@ -4,7 +4,7 @@
 #include "cocos2d.h"
 #include "Waypoint.h"
 USING_NS_CC;
-
+class Tower;
 class Enemy : public Node
 {
 public:    
@@ -31,6 +31,10 @@ public:
 	DrawNode* drawNode;
 	CustomCommand _customCommand;
 	int hBarOrigin, hBarWidth, hBarHeight, hBarDist;
+	Vector<Tower*> attackedBy;
+	void getAttacked(Tower* attacker);
+	void gotLostSight(Tower* attacker);
+	void getDamaged(int damage);
 };
 
 #endif // __TowerDefense__Enemy__

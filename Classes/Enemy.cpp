@@ -1,8 +1,9 @@
 #include "Enemy.h"
 #include "HelloWorldScene.h"
+#include "Tower.h"
+
 #define HEALTH_BAR_WIDTH 20
 #define HEALTH_BAR_ORIGIN -10
-
 Enemy* Enemy::createWithTheGame(HelloWorld* _game)
 {
 	auto obj = new Enemy();
@@ -54,6 +55,7 @@ bool Enemy::initWithTheGame(HelloWorld* _game)
 	hBarWidth = winSize.width * HEALTH_BAR_WIDTH / 480;
 	hBarDist = winSize.width * 16 / 480;
 	hBarHeight = winSize.width * 14 / 480;
+	attackedBy = Vector<Tower*>(5);
     return true;
 }
 
@@ -64,6 +66,9 @@ void Enemy::doActivate(float delta)
 
 void Enemy::getRemoved()
 {
+	for (auto attacker : attackedBy)
+		attacker->targetKilled();
+
 	theGame->enemies.eraseObject(this);
 	////Notify the game that we killed an enemy so we can check if we can send another wave
 	theGame->enemyGotKilled();
@@ -125,5 +130,24 @@ void Enemy::onDraw(const Mat4& transform, uint32_t flags)
 			myPosition.y + hBarHeight),
 		Color4F::GREEN);
 	glPopMatrix();
+}
+
+void Enemy::getAttacked(Tower* attacker)
+{
+	attackedBy.pushBack(attacker);
+}
+
+void Enemy::gotLostSight(Tower* attacker)
+{
+	attackedBy.eraseObject(attacker);
+}
+
+void Enemy::getDamaged(int damage)
+{
+	currentHp -= damage;
+	if (currentHp <= 0)
+	{
+		this->getRemoved();
+	}
 }
 
