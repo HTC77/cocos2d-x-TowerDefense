@@ -89,6 +89,53 @@ void HelloWorld::addWaypoints()
 	waypoint6->nextWaypoint = waypoint5;
 }
 
+bool HelloWorld::circle(Vec2 circlePoint, float radius, Vec2 circlePointTwo, float radiusTwo)
+{
+	float xdif = circlePoint.x - circlePointTwo.x;
+	float ydif = circlePoint.y - circlePointTwo.y;
+
+	float distance = sqrt(xdif*xdif + ydif*ydif);
+
+	if (distance <= radius + radiusTwo)
+		return true;
+
+	return false;
+}
+
+void HelloWorld::enemyGotKilled()
+{
+	if (enemies.empty()) //If there are no more enemies.
+	{
+		if (!this->loadWave())
+		{
+			CCLOG("You win!");
+			Director::getInstance()->replaceScene(
+				TransitionSplitCols::create(1, HelloWorld::createScene()));
+		}
+	}
+}
+
+void HelloWorld::getHpDamage()
+{
+
+}
+
+bool HelloWorld::loadWave()
+{
+	if (++wave > 3) return false;
+	ValueVector currenWave = waves.at(wave-1).asValueVector();
+	for (auto value : currenWave)
+	{
+		ValueMap tempMap = value.asValueMap();
+		float spawnTime = tempMap["spawnTime"].asFloat();
+		Enemy* enemy = Enemy::createWithTheGame(this);
+		enemies.pushBack(enemy);
+		enemy->schedule(schedule_selector(Enemy::doActivate), spawnTime);
+	}
+	ui_wave_lbl->setString(StringUtils::format("WAVE: %d", wave));
+	return true;
+}
+
 // on "init" you need to initialize your instance
 bool HelloWorld::init()
 {
@@ -118,6 +165,19 @@ bool HelloWorld::init()
 
 	// 4 - Add waypoints
 	this->addWaypoints();
+
+	// 5 - Create wave label
+	wave = 0;
+	ui_wave_lbl = Label::createWithBMFont(
+		"font_red-hd.fnt", StringUtils::format("WAVE: %d", wave));
+	this->addChild(ui_wave_lbl, 10);
+	ui_wave_lbl->setPosition(Vec2(400, winSize.height - 12));
+	ui_wave_lbl->setAnchorPoint(Vec2(0, 0.5));
+
+	// 6 - Add enemies
+	waves = FileUtils::getInstance()->getValueVectorFromFile(
+		"Waves.plist");
+	this->loadWave();
 
 	//this->setScale(0.5);
     return true;

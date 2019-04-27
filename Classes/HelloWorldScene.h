@@ -27,6 +27,7 @@
 
 #include "cocos2d.h"
 #include "Waypoint.h"
+#include "Enemy.h"
 USING_NS_CC;
 
 class HelloWorld : public cocos2d::Scene
@@ -52,6 +53,17 @@ public:
 	bool canBuyTower();
 	Vector<Waypoint*> waypoints;
 	void addWaypoints();
+
+	bool circle(Vec2 circlePoint, float radius, Vec2 circlePointTwo, float radiusTwo);
+	void enemyGotKilled();
+	void getHpDamage();
+
+	int wave;
+	Label *ui_wave_lbl;
+	Vector<Enemy*> enemies;
+	bool loadWave();
+	ValueVector waves;
+	ValueVector currenWave;
 };
 
 #endif // __HELLOWORLD_SCENE_H__
